@@ -1,0 +1,44 @@
+# Go-related files
+*.exe
+*.out
+*.test
+*.log
+*.prof
+*.pb.go
+tmp/
+
+# Compiled object files and binaries
+*.o
+*.a
+*.so
+*.dll
+
+# Logs and debugging
+*.log
+*.trace
+*.prof
+
+# Vendor directory (if using go modules)
+vendor/
+
+# Environment variables
+.env
+
+# IDE/editor specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+.DS_Store
+Thumbs.db
+
+# Fiber specific (sessions, cache, etc.)
+fiber.log
+fiber_sessions/
+fiber_storage/
+
+# MongoDB dump files
+dump/
+
