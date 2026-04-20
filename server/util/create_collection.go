@@ -7,5 +7,5 @@ var UserCollection *mongo.Collection
 func CreateDB(client *mongo.Client) {
 	DB := client.Database("devlogger")
 
-	UserCollection = DB.Collection("user")
+	UserCollection = DB.Collection("users")
 }

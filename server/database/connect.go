@@ -12,6 +12,8 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
 )
 
+var MongoClient *mongo.Client
+
 func Connect() {
 	MongoDB_URI := config.GetEnv("MONGODB_URI")
 	if MongoDB_URI == "" {
@@ -28,11 +30,11 @@ func Connect() {
 	}
 
 	// Disconnect connection in last
-	defer func() {
-		if err = client.Disconnect(context.TODO()); err != nil {
-			panic(err)
-		}
-	}()
+	// defer func() {
+	// 	if err = client.Disconnect(context.TODO()); err != nil {
+	// 		panic(err)
+	// 	}
+	// }()
 
 	// Send a ping to confirm a successful connection
 	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
@@ -40,5 +42,19 @@ func Connect() {
 	}
 	fmt.Println("Successfully connected to MongoDB!")
 
+	MongoClient = client
+
 	util.CreateDB(client)
+}
+
+func Disconnect() {
+	if MongoClient == nil {
+		return
+	}
+
+	if err := MongoClient.Disconnect(context.TODO()); err != nil {
+		panic(err)
+	} else {
+		fmt.Println("MongoDB connection closed gracefully")
+	}
 }

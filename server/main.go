@@ -18,6 +18,7 @@ func main() {
 	})
 
 	database.Connect()
+	defer database.Disconnect()
 
 	router.SetupRoutes(app)
 
