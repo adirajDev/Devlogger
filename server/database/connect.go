@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/adirajDev/Devlogger/server/config"
+	"github.com/adirajDev/Devlogger/server/util"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
@@ -38,4 +39,6 @@ func Connect() {
 		panic(err)
 	}
 	fmt.Println("Successfully connected to MongoDB!")
+
+	util.CreateDB(client)
 }

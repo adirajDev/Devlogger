@@ -10,7 +10,12 @@ import (
 )
 
 func main() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		CaseSensitive: true,
+		// StrictRouting: true,
+		ServerHeader: "Fiber",
+		AppName:      "Devlogger",
+	})
 
 	database.Connect()
 
