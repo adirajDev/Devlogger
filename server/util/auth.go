@@ -3,6 +3,7 @@ package util
 import (
 	"context"
 	"fmt"
+	"net/mail"
 
 	"github.com/adirajDev/Devlogger/server/model"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -22,13 +23,27 @@ func CheckPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func getUserByEmail(mail string) (*model.User, error) {
+func GetUserByEmail(mail string) (*model.User, error) {
 	var user model.User
 	err := UserCollection.FindOne(context.Background(), bson.M{"email": mail}).Decode(&user)
 	if err != nil {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func GetUserByUsername(username string) (*model.User, error) {
+	var user model.User
+	err := UserCollection.FindOne(context.Background(), bson.M{"username": username}).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func CheckEmailValidOrNot(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
 }
 
 func CheckIfUserNameExists(username string) error {
