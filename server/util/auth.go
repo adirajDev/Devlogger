@@ -7,6 +7,7 @@ import (
 
 	"github.com/adirajDev/Devlogger/server/model"
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -46,30 +47,32 @@ func CheckEmailValidOrNot(email string) bool {
 	return err == nil
 }
 
-func CheckIfUserNameExists(username string) error {
-	err := UserCollection.FindOne(
-		context.TODO(),
-		bson.M{"username": username},
-	)
+func CheckIfUserExists(username string, email string) error {
+	var result bson.M
 
-	// TODO: handle error of database error
-	if err == nil {
-		return fmt.Errorf("Username already exists")
+	filter := bson.M{
+		"$or": []bson.M{
+			{"username": username},
+			{"email": email},
+		},
 	}
 
-	return nil
-}
+	err := UserCollection.FindOne(context.TODO(), filter).Decode(&result)
 
-func CheckIfUserEmailExists(email string) error {
-	err := UserCollection.FindOne(
-		context.TODO(),
-		bson.M{"email": email},
-	)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil
+		}
 
-	// TODO: handle error of database error
-	if err == nil {
-		return fmt.Errorf("Email already exists")
+		return err
 	}
 
-	return nil
+	if result["username"] == username {
+		return fmt.Errorf("username already exists")
+	}
+	if result["email"] == email {
+		return fmt.Errorf("email already exists")
+	}
+
+	return fmt.Errorf("user already exists")
 }

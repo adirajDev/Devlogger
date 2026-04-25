@@ -15,17 +15,16 @@ func Signup(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Error on login request",
-			"errors":  err.Error(),
+			"error":   err.Error(),
 		})
 	}
 
 	// Check if username/ email already exists
-	if err := util.CheckIfUserNameExists(input.Username); err != nil {
-		return err
-	}
-
-	if err := util.CheckIfUserEmailExists(input.Email); err != nil {
-		return err
+	if err := util.CheckIfUserExists(input.Username, input.Email); err != nil {
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+			"status": "error",
+			"error":  err.Error(),
+		})
 	}
 
 	// Hash password
@@ -55,7 +54,15 @@ func Signup(c fiber.Ctx) error {
 
 	// TODO: set JWT cookie and return it
 
-	return c.JSON(fiber.Map{"status": "have fun"})
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "Successfully created account",
+		"data": fiber.Map{
+			"id":      newUser.ID,
+			"email":   newUser.Email,
+			"usename": newUser.Username,
+		},
+	})
 }
 
 func Login(c fiber.Ctx) error {
